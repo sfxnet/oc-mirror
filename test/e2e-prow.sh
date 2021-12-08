@@ -1,4 +1,4 @@
 #/bin/sh
 set -e
-bash prow/test-simple-image.sh
-bash prow/test-operator-catalog.sh
+bash test/prow/test-simple-image.sh
+bash test/prow/test-operator-catalog.sh
