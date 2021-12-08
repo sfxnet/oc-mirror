@@ -1,0 +1,44 @@
+presubmits:
+- always_run: true
+  decorate: true
+  name: oc-mirror-e2e-unit
+  rerun_command: bundle test
+  spec:
+    containers:
+    - args:
+      - -c
+      - make test-prow
+      command:
+      - /bin/sh
+      env:
+      - name: GOCACHE
+        value: /tmp/gocache
+      image: quay.io/samwalke/gobuilder:latest
+      name: main
+      resources:
+        requests:
+          cpu: "1"
+    - command:
+      - /bin/registry
+      - serve
+      - /etc/docker/registry/config.yml
+      image: quay.io/samwalke/oc-mirror-registry:latest
+      name: oc-mirror-registry
+      ports:
+      - containerPort: 5001
+      resources:
+        requests:
+          cpu: 100m
+    - command:
+      - /bin/registry
+      - serve
+      - /etc/docker/registry/config.yml
+      image: registry:2
+      name: registry
+      ports:
+      - containerPort: 5000
+      resources:
+        requests:
+          cpu: 100m
+    shareProcessNamespace: true
+  trigger: (?m)bundle test( please)?
